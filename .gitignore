@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.env
+.pytest_cache/
+
+# Streamlit
+.streamlit/
+static/
+
+# Data & Privacy (CRITICAL)
+*.xlsx
+*.xls
+*.pdf
+*.csv
+data_cache/
+downloads/
+stock_pattern_model/
+*.log
+
+# Project sensitive
+.agent/
+brain/
+.vscode/
+uv
+uv.lock
+
+# OS
+.DS_Store
+Thumbs.db
