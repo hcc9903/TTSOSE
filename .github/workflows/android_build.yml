@@ -1,3 +1,16 @@
+name: Android Build
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
       - name: Set up JDK 8
         uses: actions/setup-java@v4
         with:
@@ -10,12 +23,20 @@
 
       - name: Clean conflicting Android SDKs
         run: |
-          # 旧版本 AGP 无法解析 API 3x 的元数据
-          # 这里使用通配符删除所有可能造成干扰的高版本文件夹
+          # 核心修复点：旧版本 AGP 无法识别新版 SDK (API 30+) 的文件夹命名
+          # 使用通配符删除所有 31、32、34、35、36 等高版本组件
+          # 由于本项目使用 API 29，删除这些高版本是安全的且必要的
           sudo rm -rf $ANDROID_SDK_ROOT/platforms/android-3*
           sudo rm -rf $ANDROID_SDK_ROOT/build-tools/3*
       
       - name: Build Debug APK
         run: |
+          # 进入项目根目录并执行构建
           cd "记帐鸭/WasteBook-master"
           ./gradlew assembleDebug --stacktrace
+        
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: WasteBook-Debug-APK
+          path: "记帐鸭/WasteBook-master/app/build/outputs/apk/debug/*.apk"
