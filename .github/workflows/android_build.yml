@@ -20,6 +20,15 @@ jobs:
       
       - name: Grant execute permission for gradlew
         run: chmod +x "记帐鸭/WasteBook-master/gradlew"
+
+      - name: Clean conflicting Android SDKs
+        run: |
+          # 关键点：旧版本 AGP 无法解析 API 34/35 的元数据，导致 NumberFormatException
+          # 手动删除这些导致冲突的高版本 SDK 目录
+          rm -rf $ANDROID_SDK_ROOT/platforms/android-34
+          rm -rf $ANDROID_SDK_ROOT/platforms/android-35
+          rm -rf $ANDROID_SDK_ROOT/build-tools/34.0.0
+          rm -rf $ANDROID_SDK_ROOT/build-tools/35.0.0
       
       - name: Build Debug APK
         run: |
@@ -29,5 +38,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: WasteBook-Debug
+          name: WasteBook-Debug-APK
           path: "记帐鸭/WasteBook-master/app/build/outputs/apk/debug/*.apk"
